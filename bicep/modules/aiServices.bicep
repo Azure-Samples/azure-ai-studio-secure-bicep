@@ -119,7 +119,6 @@ resource cognitiveServicesUserRoleDefinition 'Microsoft.Authorization/roleDefini
 }
 
 // This role assignment grants the Azure AI Services managed identity the required permissions to access the AI services such as Azure OpenAI. 
-// In particular, this role assignment is required for Speech analytics to be able to transcribe the input audio and video files.
 resource cognitiveServicesUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(aiServices.id, cognitiveServicesUserRoleDefinition.id, userObjectId)
   scope: aiServices

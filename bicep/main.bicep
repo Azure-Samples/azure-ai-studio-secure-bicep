@@ -44,11 +44,11 @@ param connectionAuthType string = 'AAD'
 @description('Specifies whether creating a custom connection.')
 param customConnectionEnabled bool = true
 
-@description('Specifies the name for the Speech Analytics Project workspace.')
+@description('Specifies the name for the Azure AI Studio Hub Project workspace.')
 param projectName string = ''
 
-@description('Specifies the friendly name for the Speech Analytics Project workspace.')
-param projectFriendlyName string = 'Speech Analytics Project'
+@description('Specifies the friendly name for the Azure AI Studio Hub Project workspace.')
+param projectFriendlyName string = 'AI Studio Hub Project'
 
 @description('Specifies the public network access for the Azure AI Project workspace.')
 param projectPublicNetworkAccess string = 'Enabled'
@@ -197,28 +197,10 @@ param storageAccountANetworkAclsDefaultAction string = 'Allow'
 @description('Specifies whether the Azure Storage Account resource should only support HTTPS traffic.')
 param storageAccountSupportsHttpsTrafficOnly bool = true
 
-@description('Specifies whether to create containers in the Azure Storage Account.')
-param storageAccountCreateContainers bool = false
-
-@description('Specifies the container name for Speech Analytics file input.')
-param inputContainerName string = 'input'
-
-@description('Specifies the container name for Speech Analytics transcription output.')
-param transcriptionContainerName string = 'transcriptions'
-
-@description('Specifies the container name for Speech Analytics analytics output.')
-param analyticsContainerName string = 'analytics'
-
-@description('Specifies the container name for Speech Analytics error output.')
-param errorOutputContainerName string = 'errored'
-
-@description('Specifies the container name for Speech Analytics processed file output.')
-param processedOutputContainerName string = 'processed'
-
 @description('Specifies the resource tags for all the resoources.')
 param tags object = {}
 
-@description('Specifies the object id of a Miccrosoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources.')
+@description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources.')
 param userObjectId string = ''
 
 // Resources
@@ -295,14 +277,6 @@ module storageAccount 'modules/storageAccount.bicep' = {
     networkAclsDefaultAction: storageAccountANetworkAclsDefaultAction
     supportsHttpsTrafficOnly: storageAccountSupportsHttpsTrafficOnly
     workspaceId: workspace.outputs.id
-    createContainers: storageAccountCreateContainers
-    containerNames: [
-      inputContainerName
-      transcriptionContainerName
-      analyticsContainerName
-      errorOutputContainerName
-      processedOutputContainerName
-    ]
 
     // role assignments
     userObjectId: userObjectId
@@ -365,9 +339,7 @@ module project 'modules/project.bicep' = {
   name: 'project'
   params: {
     // workspace organization
-    name: empty(projectName)
-      ? toLower('${prefix}-project-${suffix}')
-      : projectName
+    name: empty(projectName) ? toLower('${prefix}-project-${suffix}') : projectName
     friendlyName: projectFriendlyName
     location: location
     tags: tags
@@ -392,9 +364,4 @@ output deploymentInfo object = {
   aiServicesEndpoint: aiServices.outputs.endpoint
   hubName: hub.outputs.name
   projectName: project.outputs.name
-  inputContainerName: inputContainerName
-  transcriptionContainerName: transcriptionContainerName
-  analyticsContainerName: analyticsContainerName
-  errorOutputContainerName: errorOutputContainerName
-  processedOutputContainerName: processedOutputContainerName
 }

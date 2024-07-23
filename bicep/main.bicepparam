@@ -2,14 +2,8 @@ using './main.bicep'
 
 param prefix = 'secure'
 param suffix = 'test'
-param userObjectId = '<user-object-id>'
+param userObjectId = '1abbac8a-e086-44be-8a86-3040240de304'
 param keyVaultEnablePurgeProtection = false
-param storageAccountCreateContainers = true
-param inputContainerName = 'input'
-param transcriptionContainerName = 'transcriptions'
-param analyticsContainerName = 'analytics'
-param errorOutputContainerName = 'errored'
-param processedOutputContainerName = 'processed'
 param acrEnabled = true
 param openAiDeployments = [
   {
@@ -19,7 +13,7 @@ param openAiDeployments = [
     }
     sku: {
       name: 'Standard'
-      capacity: 10
+      capacity: 1
     }
   }
   {
@@ -28,8 +22,8 @@ param openAiDeployments = [
       version: '2024-05-13'
     }
     sku: {
-      name: 'Standard'
-      capacity: 10
+      name: 'GlobalStandard'
+      capacity: 1
     }
   }
 ]
