@@ -150,7 +150,7 @@ resource azureMLDataScientistUserRoleAssignment 'Microsoft.Authorization/roleAss
   }
 }
 
-// This role assignment grants the Azure AI Services managed identity the required permissions to start the analytics Prompt Flow in a compute service defined in Azure AI Studio
+// This role assignment grants the Azure AI Services managed identity the required permissions to start Prompt Flow in a compute service defined in Azure AI Studio
 resource azureMLDataScientistManagedIdentityRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(aiServicesPrincipalId)) {
   name: guid(project.id, azureMLDataScientistRole.id, aiServicesPrincipalId)
   scope: project

@@ -4,12 +4,6 @@ param prefix = 'secure'
 param suffix = 'test'
 param userObjectId = '<user-object-id>'
 param keyVaultEnablePurgeProtection = false
-param storageAccountCreateContainers = true
-param inputContainerName = 'input'
-param transcriptionContainerName = 'transcriptions'
-param analyticsContainerName = 'analytics'
-param errorOutputContainerName = 'errored'
-param processedOutputContainerName = 'processed'
 param acrEnabled = true
 param openAiDeployments = [
   {
@@ -28,7 +22,7 @@ param openAiDeployments = [
       version: '2024-05-13'
     }
     sku: {
-      name: 'Standard'
+      name: 'GlobalStandard'
       capacity: 10
     }
   }
