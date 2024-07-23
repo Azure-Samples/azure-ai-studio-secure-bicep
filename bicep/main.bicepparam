@@ -13,7 +13,7 @@ param openAiDeployments = [
     }
     sku: {
       name: 'Standard'
-      capacity: 1
+      capacity: 10
     }
   }
   {
@@ -23,7 +23,7 @@ param openAiDeployments = [
     }
     sku: {
       name: 'GlobalStandard'
-      capacity: 1
+      capacity: 10
     }
   }
 ]
