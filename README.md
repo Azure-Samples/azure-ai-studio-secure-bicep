@@ -1,4 +1,4 @@
-# Deploy a secure Azure AI Studio Hub environment using Bicep
+# Deploy Secure Azure AI Studio via Bicep
 
 This collection of `Bicep` templates demonstrates how to set up an [Azure AI Studio](https://learn.microsoft.com/en-us/azure/ai-studio/what-is-ai-studio) environment with managed identity and Azure RBAC to connected [Azure AI Services](https://learn.microsoft.com/en-us/azure/ai-services/what-are-ai-services) and dependent resources.
 
