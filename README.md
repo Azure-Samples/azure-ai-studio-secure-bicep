@@ -9,6 +9,8 @@ This collection of `Bicep` templates demonstrates how to set up an [Azure AI Stu
 
 The Bicep modules deploy the following Azure resources:
 
+![Architecture](./images/architecture.png)
+
 | Resource                    | Type                                                                                                                                                                    | Description                                                                                                                 |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | Azure Application Insights  | [Microsoft.Insights/components](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/components?pivots=deployment-language-bicep)                       | An Azure Application Insights instance associated with the Azure AI Studio workspace                                        |
