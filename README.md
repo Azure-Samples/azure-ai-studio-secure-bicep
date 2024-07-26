@@ -31,8 +31,8 @@ The Bicep modules deploy the following Azure resources:
 
 Specify a value for the **required** parameters in the [`main.bicepparam` parameters file](./bicep/main.bicepparam) before deploying the Bicep modules.
 
-| Name                                      | Required | Type   | Allowed Values                                             | Description                                                                                                                                             |
-| ----------------------------------------- | -------- | ------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name                                      | Required | Type   | <div style="width:150px">Allowed Values</div>     | Description |
+| ----------------------------------------- | -------- | ------ | ---------------------------------------------------------- | ----------- |
 | prefix                                    | Required | string | N/A                                                        | Specifies the name prefix for all the Azure resources.                                                                                                  |
 | suffix                                    | Required | string | N/A                                                        | Specifies the name suffix for all the Azure resources.                                                                                                  |
 | location                                  | Required | string | N/A                                                        | Specifies the location for all the Azure resources.                                                                                                     |
