@@ -124,6 +124,10 @@ By following these steps, you will have Azure AI Studio set up and ready for you
 
 After deploying the resources, you can verify the deployment by checking the [Azure Portal](https://portal.azure.com) or [Azure AI Studio](https://ai.azure.com/build). Ensure all the resources are created and configured correctly.
 
+You can also follow these [instructions](./promptflow/README.md) to deploy, expose, and call the [Basic Chat](https://github.com/microsoft/promptflow/tree/main/examples/flows/chat/chat-basic) prompt flow using Bash scripts and Azure CLI.
+
+![Prompt Flow](./images/prompt-flow.png)
+
 ## Learn More
 
 For more information, see:
