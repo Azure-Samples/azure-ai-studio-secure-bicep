@@ -2,16 +2,11 @@
 
 This article will help you set up to deploy the [Basic Chat](https://github.com/microsoft/promptflow/tree/main/examples/flows/chat/chat-basic) prompt flow step-by-step using Azure CLI.
 
-- [Prompt Flow](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/prompt-flow):
-  - This is the logic that runs the Basic Chat scenario. It is a DAG (Directed Acyclic Graph) that defines the steps of the prompt flow.
-- [Managed Online Endpoint](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online?view=azureml-api-2#managed-online-endpoints-vs-kubernetes-online-endpoints):
-  - This endpoint makes the prompt flow available as a service. It deploys the model to a server, allowing you to get real-time results through the HTTPS protocol. It also tracks logs and metrics for performance monitoring.
-- [Model](https://learn.microsoft.com/en-us/azure/machine-learning/reference-yaml-model?view=azureml-api-2):
-  - This is the AI model that wraps the prompt flow logic and is used by the online endpoint to run the prompt flow.
-- [Environment](https://learn.microsoft.com/en-us/azure/machine-learning/concept-environments?view=azureml-api-2):
-  - This specifies the software and settings needed to run your model, including the necessary Python packages.
-- [Managed Deployment](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online?view=azureml-api-2#online-deployments):
-  - This includes the virtual machines and resources needed to run the prompt flow. Multiple deployments can be managed through a single endpoint, directing requests as needed.
+- [Prompt Flow](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/prompt-flow): This is the logic that runs the Speech Analytics scenario. It is a DAG (Directed Acyclic Graph) that defines the steps of the prompt flow.
+- [Managed Online Endpoint](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online?view=azureml-api-2#managed-online-endpoints-vs-kubernetes-online-endpoints): This endpoint makes the prompt flow available as a service. It deploys the model to a server, allowing you to get real-time results through the HTTPS protocol. It also tracks logs and metrics for performance monitoring.
+- [Model](https://learn.microsoft.com/en-us/azure/machine-learning/reference-yaml-model?view=azureml-api-2): This is the AI model that wraps the prompt flow logic and is used by the online endpoint to run the prompt flow.
+- [Environment](https://learn.microsoft.com/en-us/azure/machine-learning/concept-environments?view=azureml-api-2): This specifies the software and settings needed to run your model, including the necessary Python packages.
+- [Managed Deployment](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online?view=azureml-api-2#online-deployments): This includes the virtual machines and resources needed to run the prompt flow. Multiple deployments can be managed through a single endpoint, directing requests as needed.
 
 For more information on prompt flows and how to deploy a prompt flow using an online endpoint and managed deployment, see the following resources:
 
@@ -50,6 +45,7 @@ For more information on prompt flows and how to deploy a prompt flow using an on
     - [Step 03: Retrieve a JWT Security Token](#step-03-retrieve-a-jwt-security-token)
     - [Step 04: Retrieve the OpenAPI Schema of the REST Service](#step-04-retrieve-the-openapi-schema-of-the-rest-service)
     - [Step 05: Call the Prompt Flow via the REST Service](#step-05-call-the-prompt-flow-via-the-rest-service)
+
 
 ## Objectives
 
@@ -1131,7 +1127,7 @@ Before you run the script, make sure each variable below has the right value. Ea
 When you run the script from the command line, you can pass the values for each variable as named arguments. For example:
 
 ```bash
-./call.sh --resourceGroupName "ai-rg" --endpointName "test-chat-flow-endpoint" --projectWorkspaceName "moon-project-test" --question "Tell me about Pisa in Tuscany, Italy"
+./call.sh --resourceGroupName "ai-rg" --endpointName "test-chat-flow-endpoint" --projectWorkspaceName "moon-project-test" --question "Tell me about Pisa in Tuscany, Italy" 
 ```
 
 > [!NOTE]
