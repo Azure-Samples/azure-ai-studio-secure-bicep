@@ -29,7 +29,7 @@ For more information on prompt flows and how to deploy a prompt flow using an on
   - [Pre-requisites](#pre-requisites)
   - [Deploy the Prompt Flow](#deploy-the-prompt-flow)
     - [Step 01: Confirm All Required Resources Are Created Successfully](#step-01-confirm-all-required-resources-are-created-successfully)
-    - [Step 02: Include `functions.sh` File](#step-02-include-functionssh-file)
+    - [Step 02: Include functions.sh File](#step-02-include-functionssh-file)
     - [Step 03: Assign Value to Variables](#step-03-assign-value-to-variables)
     - [Step 04: Install Necessary Tools and Packages](#step-04-install-necessary-tools-and-packages)
     - [Step 05: Unzip the Prompt Flow Archive and Update the Configuration](#step-05-unzip-the-prompt-flow-archive-and-update-the-configuration)
@@ -37,15 +37,14 @@ For more information on prompt flows and how to deploy a prompt flow using an on
     - [Step 07: Create the Online Endpoint for the Prompt Flow](#step-07-create-the-online-endpoint-for-the-prompt-flow)
     - [Step 08: Create Role Assignment and Diagnostic Settings](#step-08-create-role-assignment-and-diagnostic-settings)
     - [Step 09: Create a Model for the Prompt Flow](#step-09-create-a-model-for-the-prompt-flow)
-    - [Step 11: Create an Environment for the Prompt Flow](#step-11-create-an-environment-for-the-prompt-flow)
-    - [Step 12: Create a Managed Online Deployment for the Prompt Flow](#step-12-create-a-managed-online-deployment-for-the-prompt-flow)
+    - [Step 10: Create an Environment for the Prompt Flow](#step-10-create-an-environment-for-the-prompt-flow)
+    - [Step 11: Create a Managed Online Deployment for the Prompt Flow](#step-11-create-a-managed-online-deployment-for-the-prompt-flow)
   - [Call the Prompt Flow](#call-the-prompt-flow)
-    - [Step 01: Include `functions.sh` File](#step-01-include-functionssh-file)
+    - [Step 01: Include functions.sh File](#step-01-include-functionssh-file)
     - [Step 02: Assign Value to Variables](#step-02-assign-value-to-variables)
     - [Step 03: Retrieve a JWT Security Token](#step-03-retrieve-a-jwt-security-token)
     - [Step 04: Retrieve the OpenAPI Schema of the REST Service](#step-04-retrieve-the-openapi-schema-of-the-rest-service)
     - [Step 05: Call the Prompt Flow via the REST Service](#step-05-call-the-prompt-flow-via-the-rest-service)
-
 
 ## Objectives
 
@@ -89,7 +88,7 @@ Use the [deploy.sh](../bicep/deploy.sh) script to setup all the necessary Azure 
 
 If any of these Azure resources are missing, please refer to the [README](../README.md) to create them.
 
-### Step 02: Include `functions.sh` File
+### Step 02: Include functions.sh File
 
 In this step, we incorporate the [functions.sh](./functions.sh) file that contains some helper functions to automate some tasks.
 
@@ -901,7 +900,7 @@ EOF
 fi
 ```
 
-### Step 11: Create an Environment for the Prompt Flow
+### Step 10: Create an Environment for the Prompt Flow
 
 In this step, we check if a specific [Azure Machine Learning (AML) environment](https://learn.microsoft.com/en-us/azure/machine-learning/concept-environments?view=azureml-api-2) exists in our project workspace and create it if it doesn't.
 
@@ -970,7 +969,7 @@ EOF
 fi
 ```
 
-### Step 12: Create a Managed Online Deployment for the Prompt Flow
+### Step 11: Create a Managed Online Deployment for the Prompt Flow
 
 Next, we go through how to manage the deployment of an [Azure Machine Learning (AML) managed online deployment](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online?view=azureml-api-2#managed-online-endpoints-vs-kubernetes-online-endpoints). This involves checking if a deployment exists and updating it or creating a new one if needed.
 
@@ -1108,7 +1107,7 @@ fi
 
 This section explains the steps followed by the `call.sh` Bash script call the prompt flow via a REST service exposed by the online endpoint.
 
-### Step 01: Include `functions.sh` File
+### Step 01: Include functions.sh File
 
 In this step, we incorporate the [functions.sh](./functions.sh) file that contains some helper functions to automate some tasks.
 
