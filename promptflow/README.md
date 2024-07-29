@@ -74,7 +74,7 @@ This section explains the steps followed by the `deploy.sh` Bash script to set u
 
 Use the [deploy.sh](../bicep/deploy.sh) script to setup all the necessary Azure resources to run, monitor, and expose the prompt flow:
 
-![Architecture](./images/architecture.png)
+![Architecture](../images/architecture.png)
 
 | Resource                    | Type                                                                                                                                                                    | Description                                                                                                                 |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
