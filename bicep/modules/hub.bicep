@@ -63,9 +63,6 @@ param connectionAuthType string = 'AAD'
 @description('Specifies the name for the Azure OpenAI Service connection.')
 param aiServicesConnectionName string = ''
 
-@description('Specifies whether creating a custom connection.')
-param customConnectionEnabled bool = true
-
 @description('Specifies the resource id of the Log Analytics workspace.')
 param workspaceId string
 
@@ -87,6 +84,13 @@ param logsToEnable array = [
 param metricsToEnable array = [
   'AllMetrics'
 ]
+
+@description('Determines whether or not to use credentials for the system datastores of the workspace workspaceblobstore and workspacefilestore. The default value is accessKey, in which case, the workspace will create the system datastores with credentials. If set to identity, the workspace will create the system datastores with no credentials.')
+@allowed([
+  'identity'
+  'accessKey'
+])
+param systemDatastoresAuthMode string = 'identity'
 
 // Variables
 var diagnosticSettingsName = 'diagnosticSettings'
@@ -144,7 +148,7 @@ resource hub 'Microsoft.MachineLearningServices/workspaces@2024-04-01-preview' =
     storageAccount: storageAccountId
     applicationInsights: applicationInsightsId
     containerRegistry: containerRegistryId == '' ? null : containerRegistryId
-    systemDatastoresAuthMode: 'identity'
+    systemDatastoresAuthMode: systemDatastoresAuthMode
   }
 
   resource aiServicesConnection 'connections@2024-01-01-preview' = {

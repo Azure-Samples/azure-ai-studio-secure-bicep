@@ -41,8 +41,12 @@ param hubPublicNetworkAccess string = 'Enabled'
 ])
 param connectionAuthType string = 'AAD'
 
-@description('Specifies whether creating a custom connection.')
-param customConnectionEnabled bool = true
+@description('Determines whether or not to use credentials for the system datastores of the workspace workspaceblobstore and workspacefilestore. The default value is accessKey, in which case, the workspace will create the system datastores with credentials. If set to identity, the workspace will create the system datastores with no credentials.')
+@allowed([
+  'identity'
+  'accessKey'
+])
+param systemDatastoresAuthMode string = 'identity'
 
 @description('Specifies the name for the Azure AI Studio Hub Project workspace.')
 param projectName string = ''
@@ -323,7 +327,7 @@ module hub 'modules/hub.bicep' = {
     keyVaultId: keyVault.outputs.id
     storageAccountId: storageAccount.outputs.id
     connectionAuthType: connectionAuthType
-    customConnectionEnabled: customConnectionEnabled
+    systemDatastoresAuthMode: systemDatastoresAuthMode
 
     // workspace configuration
     publicNetworkAccess: hubPublicNetworkAccess
