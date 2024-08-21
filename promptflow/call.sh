@@ -6,13 +6,13 @@ source ./functions.sh
 # Variables
 declare -A variables=(
   # Specifies the name of the Azure Resource Group that contains your resources.
-  [resourceGroupName]="ai-rg"
+  [resourceGroupName]="ai-vnet-rg"
 
   # Specifies the name of the Azure Machine Learning model used by the prompt flow.
-  [endpointName]="test-chat-flow-endpoint"
+  [endpointName]="bami-chat-flow-endpoint"
 
   # Specifies the name of the project workspace.
-  [projectWorkspaceName]="moon-project-test"
+  [projectWorkspaceName]="bami-project-test"
 
   # Specifies the question to send to the chat prompt flow exposed via the online endpoint.
   [question]="Tell me about Pisa in Tuscany, Italy"
