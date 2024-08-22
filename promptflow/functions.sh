@@ -136,6 +136,32 @@ install_promptflow() {
   fi
 }
 
+# Installs ml extension for Azure CLI if not present
+install_ml_extension() {
+  echo "Checking if [ml] extension is already installed..."
+  az extension show --name ml --only-show-errors &>/dev/null
+
+  if [[ $? == 0 ]]; then
+    echo "[ml] extension is already installed"
+
+    # Update the extension to make sure you have the latest version installed
+    echo "Updating [ml] extension..."
+    az extension update --name ml --only-show-errors &>/dev/null
+  else
+    echo "[ml] extension is not installed. Installing..."
+
+    # Install ml extension
+    az extension add --name ml --only-show-errors 1>/dev/null
+
+    if [[ $? == 0 ]]; then
+      echo "[ml] extension successfully installed"
+    else
+      echo "Failed to install [ml] extension"
+      exit
+    fi
+  fi
+}
+
 # Replaces a field value in a YAML file using yq.
 replace_yaml_field() {
   local yaml_file="$1"

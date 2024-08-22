@@ -38,7 +38,8 @@ For more information on prompt flows and how to deploy a prompt flow using an on
     - [Step 08: Create Role Assignment and Diagnostic Settings](#step-08-create-role-assignment-and-diagnostic-settings)
     - [Step 09: Create a Model for the Prompt Flow](#step-09-create-a-model-for-the-prompt-flow)
     - [Step 10: Create an Environment for the Prompt Flow](#step-10-create-an-environment-for-the-prompt-flow)
-    - [Step 11: Create a Managed Online Deployment for the Prompt Flow](#step-11-create-a-managed-online-deployment-for-the-prompt-flow)
+    - [Step 11: Create Hub Workspace Managed Virtual Network](#step-11-create-hub-workspace-managed-virtual-network)
+    - [Step 12: Create a Managed Online Deployment for the Prompt Flow](#step-12-create-a-managed-online-deployment-for-the-prompt-flow)
   - [Call the Prompt Flow](#call-the-prompt-flow)
     - [Step 01: Include functions.sh File](#step-01-include-functionssh-file)
     - [Step 02: Assign Value to Variables](#step-02-assign-value-to-variables)
@@ -238,6 +239,32 @@ install_promptflow() {
   fi
 }
 
+# Installs ml extension for Azure CLI if not present
+install_ml_extension() {
+  echo "Checking if [ml] extension is already installed..."
+  az extension show --name ml --only-show-errors &>/dev/null
+
+  if [[ $? == 0 ]]; then
+    echo "[ml] extension is already installed"
+
+    # Update the extension to make sure you have the latest version installed
+    echo "Updating [ml] extension..."
+    az extension update --name ml --only-show-errors &>/dev/null
+  else
+    echo "[ml] extension is not installed. Installing..."
+
+    # Install ml extension
+    az extension add --name ml --only-show-errors 1>/dev/null
+
+    if [[ $? == 0 ]]; then
+      echo "[ml] extension successfully installed"
+    else
+      echo "Failed to install [ml] extension"
+      exit
+    fi
+  fi
+}
+
 # Replaces a field value in a YAML file using yq.
 replace_yaml_field() {
   local yaml_file="$1"
@@ -364,19 +391,22 @@ When you run the script from the command line, you can pass the values for each 
 # Variables
 declare -A variables=(
   # The name of the Azure Resource Group that contains your resources.
-  [resourceGroupName]="ai-rg"
+  [resourceGroupName]="ai-vnet-rg"
 
   # The location of your Azure resources.
   [location]="westeurope"
 
   # The name of the Azure AI Services account used by the prompt flow.
-  [aiServicesName]="moon-ai-services-test"
+  [aiServicesName]="bami-ai-services-test"
+
+  # The name of the hub workspace.
+  [hubWorkspaceName]="bami-hub-test"
 
   # The name of the project workspace.
-  [projectWorkspaceName]="moon-project-test"
+  [projectWorkspaceName]="bami-project-test"
 
   # The name of the Azure Log Analytics workspace to monitor the Azure Machine Learning online endpoint.
-  [logAnalyticsName]="moon-log-analytics-test"
+  [logAnalyticsName]="bami-log-analytics-test"
 
   # The SKU of the Azure Log Analytics workspace.
   [logAnalyticsSku]="PerGB2018"
@@ -396,7 +426,7 @@ declare -A variables=(
   [useExistingConnection]="true"
 
   # The name of the existing Azure OpenAI connection for the prompt flow within the Hub workspace.
-  [aoaiConnectionName]="moon-ai-services-test-connection_aoai"
+  [aoaiConnectionName]="bami-ai-services-test-connection_aoai"
 
   # The name of the existing Azure OpenAI GPT model deployment within the Hub workspace.
   [aoaiDeploymentName]="gpt-4o"
@@ -408,10 +438,10 @@ declare -A variables=(
   [updateExistingDeployment]="false"
 
   # The name of the Azure Machine Learning model used by the prompt flow.
-  [endpointName]="test-chat-flow-endpoint"
+  [endpointName]="bami-chat-flow-endpoint"
 
   # Specifies the name of the Azure Machine Learning model used by the prompt flow.
-  [modelName]="test-chat-flow-model"
+  [modelName]="bami-chat-flow-model"
 
   # The description of the Azure Machine Learning model for the prompt flow.
   [modelDescription]="Azure Machine Learning model for the test chat prompt flow."
@@ -479,6 +509,9 @@ install_python_and_pip
 
 # Check and install promptflow tool if not present
 install_promptflow
+
+# Installs ml extension for Azure CLI if not present
+install_ml_extension
 ```
 
 ### Step 05: Unzip the Prompt Flow Archive and Update the Configuration
@@ -718,11 +751,12 @@ if [ $? -eq 0 ]; then
   fi
 
   # Retrieve the resource id of the project workspace
-  projectWorkspaceId=$(az ml workspace show \
-    --name moon-project-test \
-    --resource-group ai-rg \
+ projectWorkspaceId=$(az ml workspace show \
+    --name $projectWorkspaceName \
+    --resource-group $resourceGroupName \
     --query id \
-    --output tsv --only-show-errors)
+    --output tsv \
+    --only-show-errors)
 
   if [ -n $projectWorkspaceId ]; then
     echo "The resource id of the [$projectWorkspaceName] project workspace is [$projectWorkspaceId]."
@@ -969,7 +1003,60 @@ EOF
 fi
 ```
 
-### Step 11: Create a Managed Online Deployment for the Prompt Flow
+### Step 11: Create Hub Workspace Managed Virtual Network
+
+This step is executed only when the managed network isolation mode of the hub workspace is set to [Allow Internet Outbound](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network). In this scenario, the creation of the managed virtual network is deferred until a compute resource is initiated or provisioning is manually started. Allowing for automatic creation, it can take approximately 30 minutes to provision the first compute resource, as the network is being set up concurrently.
+
+If you attempt to create a managed deployment within a project workspace that is subordinate to a hub workspace configured with a managed network, and the managed virtual network has not yet been provisioned, you will encounter a [WorkspaceManagedNetworkNotReady](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-troubleshoot-online-endpoints?view=azureml-api-2&tabs=cli#error-workspacemanagednetworknotready) error. For more details, see [Manually provision workspace managed VNet](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-managed-network?view=azureml-api-2#manually-provision-a-managed-vnet).
+
+```bash
+# Check whether the hub workspace is configured to use a managed virtual network 
+echo "Checking whether the [$hubWorkspaceName] hub workspace is configured to use a managed virtual network..."
+isolationMode=$(az ml workspace show \
+  --name $hubWorkspaceName \
+  --resource-group $resourceGroupName \
+  --query managed_network.isolation_mode \
+  --output tsv \
+  --only-show-errors)
+
+if [ $? -eq 0 ]; then 
+  if [ "$isolationMode" != "disabled" ]; then
+    echo "[$hubWorkspaceName] hub workspace has [$isolationMode] isolation mode"
+    echo "Checking whether managed virtual network for the [$hubWorkspaceName] hub workspace has been provisioned successfully..."
+
+    status=$(az ml workspace show \
+      --name $hubWorkspaceName \
+      --resource-group $resourceGroupName \
+      --query managed_network.status.status \
+      --output tsv \
+      --only-show-errors)
+    
+    if [ "$status" == "Inactive" ]; then
+      echo "Provisioning the managed virtual network for the [$hubWorkspaceName] hub workspace..."
+      az ml workspace provision-network \
+        --name $hubWorkspaceName \
+        --resource-group $resourceGroupName \
+        --only-show-errors 1>/dev/null
+      
+      if [ $? -eq 0 ]; then 
+        echo "The managed virtual network for the [$hubWorkspaceName] hub workspace has been successfully provisioned"
+      else
+        echo "An error occurred while provisioning the managed virtual network for the [$hubWorkspaceName] hub workspace"
+        exit -1
+      fi
+    else
+      echo "A managed virtual network already exists for the [$hubWorkspaceName] hub workspace"
+    fi
+  else
+    echo "[$hubWorkspaceName] hub workspace has [$isolationMode] isolation mode, hence it's not configured to use a managed virtual network"
+  fi
+else
+  echo "An error occurred while retrieving data of the [$hubWorkspaceName] hub workspace"
+  exit -1
+fi
+```
+
+### Step 12: Create a Managed Online Deployment for the Prompt Flow
 
 Next, we go through how to manage the deployment of an [Azure Machine Learning (AML) managed online deployment](https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online?view=azureml-api-2#managed-online-endpoints-vs-kubernetes-online-endpoints). This involves checking if a deployment exists and updating it or creating a new one if needed.
 
