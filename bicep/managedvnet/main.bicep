@@ -552,6 +552,7 @@ module privateEndpoints './modules/privateEndpoints.bicep' = {
 
 module virtualMachine './modules/virtualMachine.bicep' = {
   name: 'virtualMachine'
+  scope: resourceGroup(virtualNetworkResourceGroupName)
   params: {
     vmName: empty(vmName) ? toLower('${prefix}-jb-vm-${suffix}') : vmName
     vmNicName: empty(vmName) ? toLower('${prefix}-jb-nic-${suffix}') : vmName
