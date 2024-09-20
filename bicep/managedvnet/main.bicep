@@ -136,6 +136,13 @@ param openAiDeployments array = [
 @description('Specifies the name of the Azure Key Vault resource.')
 param keyVaultName string = ''
 
+@description('Specifies whether to allow public network access for Key Vault.')
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+param keyVaultPublicNetworkAccess string = 'Disabled'
+
 @description('Specifies the default action of allow or deny when no other rules match for the Azure Key Vault resource. Allowed values: Allow or Deny')
 @allowed([
   'Allow'
@@ -178,7 +185,7 @@ param acrAdminUserEnabled bool = false
   'Disabled'
   'Enabled'
 ])
-param acrPublicNetworkAccess string = 'Enabled'
+param acrPublicNetworkAccess string = 'Disabled'
 
 @description('Tier of your Azure Container Registry.')
 @allowed([
@@ -215,6 +222,13 @@ param acrZoneRedundancy string = 'Disabled'
 
 @description('Specifies the name of the Azure Azure Storage Account resource resource.')
 param storageAccountName string = ''
+
+@description('Specifies whether to allow public network access for the storage account.')
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+param storageAccountPublicNetworkAccess string = 'Disabled'
 
 @description('Specifies the access tier of the Azure Storage Account resource. The default value is Hot.')
 param storageAccountAccessTier string = 'Hot'
@@ -387,28 +401,6 @@ param tags object = {}
 param userObjectId string = ''
 
 // Resources
-module keyVault 'modules/keyVault.bicep' = {
-  name: 'keyVault'
-  params: {
-    // properties
-    name: empty(keyVaultName) ? ('${prefix}-key-vault-${suffix}') : keyVaultName
-    location: location
-    tags: tags
-    networkAclsDefaultAction: keyVaultNetworkAclsDefaultAction
-    enabledForDeployment: keyVaultEnabledForDeployment
-    enabledForDiskEncryption: keyVaultEnabledForDiskEncryption
-    enabledForTemplateDeployment: keyVaultEnabledForTemplateDeployment
-    enablePurgeProtection: keyVaultEnablePurgeProtection
-    enableRbacAuthorization: keyVaultEnableRbacAuthorization
-    enableSoftDelete: keyVaultEnableSoftDelete
-    softDeleteRetentionInDays: keyVaultSoftDeleteRetentionInDays
-    workspaceId: workspace.outputs.id
-
-    // role assignments
-    userObjectId: userObjectId
-  }
-}
-
 module workspace 'modules/logAnalytics.bicep' = {
   name: 'workspace'
   params: {
@@ -429,6 +421,29 @@ module applicationInsights 'modules/applicationInsights.bicep' = {
     location: location
     tags: tags
     workspaceId: workspace.outputs.id
+  }
+}
+
+module keyVault 'modules/keyVault.bicep' = {
+  name: 'keyVault'
+  params: {
+    // properties
+    name: empty(keyVaultName) ? ('${prefix}-key-vault-${suffix}') : keyVaultName
+    location: location
+    tags: tags
+    publicNetworkAccess: keyVaultPublicNetworkAccess
+    networkAclsDefaultAction: keyVaultNetworkAclsDefaultAction
+    enabledForDeployment: keyVaultEnabledForDeployment
+    enabledForDiskEncryption: keyVaultEnabledForDiskEncryption
+    enabledForTemplateDeployment: keyVaultEnabledForTemplateDeployment
+    enablePurgeProtection: keyVaultEnablePurgeProtection
+    enableRbacAuthorization: keyVaultEnableRbacAuthorization
+    enableSoftDelete: keyVaultEnableSoftDelete
+    softDeleteRetentionInDays: keyVaultSoftDeleteRetentionInDays
+    workspaceId: workspace.outputs.id
+
+    // role assignments
+    userObjectId: userObjectId
   }
 }
 
@@ -458,6 +473,7 @@ module storageAccount 'modules/storageAccount.bicep' = {
     name: empty(storageAccountName) ? toLower('${prefix}datastore${suffix}') : storageAccountName
     location: location
     tags: tags
+    publicNetworkAccess: storageAccountPublicNetworkAccess
     accessTier: storageAccountAccessTier
     allowBlobPublicAccess: storageAccountAllowBlobPublicAccess
     allowSharedKeyAccess: storageAccountAllowSharedKeyAccess
@@ -552,7 +568,6 @@ module privateEndpoints './modules/privateEndpoints.bicep' = {
 
 module virtualMachine './modules/virtualMachine.bicep' = {
   name: 'virtualMachine'
-  scope: resourceGroup(virtualNetworkResourceGroupName)
   params: {
     vmName: empty(vmName) ? toLower('${prefix}-jb-vm-${suffix}') : vmName
     vmNicName: empty(vmName) ? toLower('${prefix}-jb-nic-${suffix}') : vmName

@@ -5,6 +5,13 @@ param name string
 @description('Specifies the location.')
 param location string = resourceGroup().location
 
+@description('Specifies whether to allow public network access for the storage account.')
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+param publicNetworkAccess string = 'Disabled'
+
 @description('Specifies the resource id of the Log Analytics workspace.')
 param workspaceId string
 
@@ -134,6 +141,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
 
   properties: {
+    publicNetworkAccess: publicNetworkAccess
     accessTier: accessTier
     allowBlobPublicAccess: allowBlobPublicAccess
     allowCrossTenantReplication: allowCrossTenantReplication

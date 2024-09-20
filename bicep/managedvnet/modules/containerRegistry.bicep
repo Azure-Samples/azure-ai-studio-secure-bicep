@@ -7,12 +7,12 @@ param name string = 'acr${uniqueString(resourceGroup().id)}'
 @description('Enable admin user that have push / pull permission to the registry.')
 param adminUserEnabled bool = false
 
-@description('Whether to allow public network access. Defaults to Enabled.')
+@description('Specifies whether to allow public network access for the container registry.')
 @allowed([
   'Disabled'
   'Enabled'
 ])
-param publicNetworkAccess string = 'Enabled'
+param publicNetworkAccess string = 'Disabled'
 
 @description('Tier of your Azure Container Registry.')
 @allowed([

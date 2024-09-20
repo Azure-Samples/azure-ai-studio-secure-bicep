@@ -15,6 +15,13 @@ param skuName string = 'standard'
 @description('Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault.')
 param tenantId string = subscription().tenantId
 
+@description('Specifies whether to allow public network access for Key Vault.')
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+param publicNetworkAccess string = 'Disabled'
+
 @description('The default action of allow or deny when no other rules match. Allowed values: Allow or Deny')
 @allowed([
   'Allow'
@@ -105,6 +112,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     enableRbacAuthorization: enableRbacAuthorization
     enableSoftDelete: enableSoftDelete
     softDeleteRetentionInDays: softDeleteRetentionInDays
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 

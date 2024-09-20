@@ -54,6 +54,69 @@ The [Azure Private Endpoints](https://learn.microsoft.com/en-us/azure/private-li
 > [!NOTE]
 > The creation of the managed virtual network is deferred until a compute resource is created or provisioning is manually started. When allowing automatic creation, it can take around 30 minutes to create the first compute resource as it is also provisioning the network. For more information, see [Manually provision workspace managed VNet](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-managed-network?view=azureml-api-2#manually-provision-a-managed-vnet).
 
+## Managed Virtual Network
+
+When you provision the hub workspace of your Azure AI Studio with an isolation mode equal to the [Allow Internet Outbound](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network?tabs=portal#configure-a-managed-virtual-network-to-allow-internet-outbound) isolation mode, the managed virtual network and the Azure Private Endpoints to the dependent resources will not be created if public network access of Azure Key Vault, Azure Container Registry, and Azure Storage Account dependent resources is enabled.
+
+If you initially create Azure Key Vault, Azure Container Registry, and Azure Storage Account dependent resources with public network enabled and then decide to disable it later, the managed virtual network will not be automatically provisioned if it is not already provisioned, and the private endpoints to the dependent resources will not be created.
+
+In this case, if you want o create the private endpoints to the dependent resources, you need to reprovision the hub manage virtual network in one of the following ways:
+
+- Redeploy the hub workspace using Bicep or Terraform templates. If the isolation mode is set to [Allow Internet Outbound](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network?tabs=portal#configure-a-managed-virtual-network-to-allow-internet-outbound) and the dependent resources referenced by the hub workspace have public network access disabled, this operation will trigger the creation of the managed virtual network, if it does not already exist, and the private endpoints to the dependent resources.
+- Execute the following Azure CLI command [az ml workspace provision-network](https://learn.microsoft.com/en-us/cli/azure/ml/workspace?view=azure-cli-latest#az-ml-workspace-provision-network) to reprovision the managed virtual network. The private endpoints will be created with the managed virtual network if the public network access of the dependent resources is disabled.
+
+```bash
+az ml workspace provision-network --name my_hub_workspace_name --resource-group
+```
+
+At this time, it's not possible to directly access the managed virtual network via the Azure CLI or the Azure Portal. You can see the managed virtual network indirectly by looking at the private endpoints, if any, under the hub workspace. You can proceed as follows:
+
+1. Go to the Azure Portal and select your Azure AI hub.
+2. Click on `Settings` and then `Networking`.
+3. Open the `Workspace managed outbound access` tab.
+4. Expand the section titled `Required outbound rules`.
+
+Here, you will find the private endpoints that are connected to the resources within the hub managed virtual network. Ensure that these private endpoints are active.
+
+![Workspace Managed Outbound Access](../../images/hub-workspace.png)
+
+You can also see the private endpoints hosted by the manage virtual network of your hub workspace inside the `Networking` settings of inividual dependent resources, for example Key Vault:
+
+1. Go to the Azure Portal and select your Azure Key Vault.
+2. Click on `Settings` and then `Networking`.
+3. Open the `Private endpoint connections` tab.
+
+Here, you will find the private endpoint created by the Bicep templates in the client virtual network along with the private endpoint created in the hub managed virtual network of the hub. 
+
+![Key Vault Private Enpoints](../../images/key-vault.png)
+
+Also note that when you create a hub workspace with the [Allow Internet Outbound](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network?tabs=portal#configure-a-managed-virtual-network-to-allow-internet-outbound) isolation mode, the creation of the managed network is not immediate to save costs. The managed virtual network needs to be manually triggered via the [az ml workspace provision-network](https://learn.microsoft.com/en-us/cli/azure/ml/workspace?view=azure-cli-latest#az-ml-workspace-provision-network) command, or it will be triggered when you create a compute resource or private endpoints to dependent resources.
+
+At this time, the creation of an online endpoint does not automatically trigger the creation of a managed virtual network. An error occurs if you try to create an online deployment under the workspace which enabled workspace managed VNet but the managed VNet is not provisioned yet. Workspace managed VNet should be provisioned before you create an online deployment. Follow instructions to manually provision the workspace managed VNet. Once completed, you may start creating online deployments. For more information, see Network isolation with managed online endpoint and Secure your managed online endpoints with network isolation.
+
+## Limitations
+
+The current limitations of managed virtual network are:
+
+- Azure AI Studio currently doesn't support bringing your own virtual network, it only supports managed virtual network isolation.
+- Once you enable managed virtual network isolation of your Azure AI, you can't disable it.
+- Managed virtual network uses private endpoint connections to access your private resources. You can't have a private endpoint and a service endpoint at the same time for your Azure resources, such as a storage account. We recommend using private endpoints in all scenarios.
+- The managed virtual network is deleted when the Azure AI is deleted.
+- Data exfiltration protection is automatically enabled for the only approved outbound mode. If you add other outbound rules, such as to FQDNs, Microsoft can't guarantee that you're protected from data exfiltration to those outbound destinations.
+- Using FQDN outbound rules increases the cost of the managed virtual network because FQDN rules use Azure Firewall. For more information, see [Pricing](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network?tabs=portal#pricing).
+- FQDN outbound rules only support ports 80 and 443.
+- When using a compute instance with a managed network, use the `az ml compute connect-ssh` command to connect to the compute using SSH.
+
+## Pricing
+
+According to the [documentation](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network?tabs=portal#pricing), the hub managed virtual network feature is free. However, you will be charged for the following resources used by the managed virtual network:
+
+- Azure Private Link - Private endpoints used to secure communications between the managed virtual network and Azure resources rely on Azure Private Link. For more information on pricing, see [Azure Private Link pricing](https://azure.microsoft.com/pricing/details/private-link/).
+- FQDN outbound rules - FQDN outbound rules are implemented using Azure Firewall. If you use outbound FQDN rules, charges for Azure Firewall are included in your billing. Azure Firewall SKU is standard. Azure Firewall is provisioned per hub.
+
+    > [!IMPORTANT]
+    > The firewall isn't created until you add an outbound FQDN rule. If you don't use FQDN rules, you will not be charged for Azure Firewall. For more information on pricing, see [Azure Firewall pricing](https://azure.microsoft.com/pricing/details/azure-firewall/).
+
 ## Secure Access to the Jumpbox Virtual Machine
 
 The jumpbox virtual machine is deployed with Windows 11 operating system and the `Microsoft.Azure.ActiveDirectory` VM extension, a specialized extension for integrating Azure virtual machines (VMs) with Microsoft Entra ID. This integration provides several key benefits, particularly in enhancing security and simplifying access management. Here's an overview of what the Microsoft.Azure.ActiveDirectory VM extension offers:

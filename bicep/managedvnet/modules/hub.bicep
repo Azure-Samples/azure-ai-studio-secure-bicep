@@ -27,7 +27,7 @@ param description_ string
   'AllowOnlyApprovedOutbound'
   'Disabled'
 ])
-param isolationMode string = 'Disabled'
+param isolationMode string = 'AllowInternetOutbound'
 
 @description('Specifies the public network access for the machine learning workspace.')
 @allowed([
