@@ -51,12 +51,11 @@ This set of [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manag
 
 The [Azure Private Endpoints](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview) and [Private DNS Zones](https://docs.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) in the hub workspace managed virtual network are automatically created for you, while the Bicep templates create the [Azure Private Endpoints](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview) and relative [Private DNS Zones](https://docs.microsoft.com/en-us/azure/templates/microsoft.network/privatednszones) in the client virtual network.
 
-> [!NOTE]
-> The creation of the managed virtual network is deferred until a compute resource is created or provisioning is manually started. When allowing automatic creation, it can take around 30 minutes to create the first compute resource as it is also provisioning the network. For more information, see [Manually provision workspace managed VNet](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-managed-network?view=azureml-api-2#manually-provision-a-managed-vnet).
-
 ## Managed Virtual Network
 
 When you provision the hub workspace of your Azure AI Studio with an isolation mode equal to the [Allow Internet Outbound](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network?tabs=portal#configure-a-managed-virtual-network-to-allow-internet-outbound) isolation mode, the managed virtual network and the Azure Private Endpoints to the dependent resources will not be created if public network access of Azure Key Vault, Azure Container Registry, and Azure Storage Account dependent resources is enabled.
+
+The creation of the managed virtual network is deferred until a compute resource is created or provisioning is manually started. When allowing automatic creation, it can take around 30 minutes to create the first compute resource as it is also provisioning the network. For more information, see [Manually provision workspace managed VNet](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-managed-network?view=azureml-api-2#manually-provision-a-managed-vnet).
 
 If you initially create Azure Key Vault, Azure Container Registry, and Azure Storage Account dependent resources with public network enabled and then decide to disable it later, the managed virtual network will not be automatically provisioned if it is not already provisioned, and the private endpoints to the dependent resources will not be created.
 
@@ -80,7 +79,7 @@ Here, you will find the private endpoints that are connected to the resources wi
 
 ![Workspace Managed Outbound Access](../../images/hub-workspace.png)
 
-You can also see the private endpoints hosted by the manage virtual network of your hub workspace inside the `Networking` settings of inividual dependent resources, for example Key Vault:
+You can also see the private endpoints hosted by the manage virtual network of your hub workspace inside the `Networking` settings of individual dependent resources, for example Key Vault:
 
 1. Go to the Azure Portal and select your Azure Key Vault.
 2. Click on `Settings` and then `Networking`.
