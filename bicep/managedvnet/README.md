@@ -263,7 +263,7 @@ We suggest reading sensitive configuration data such as passwords or SSH keys fr
 
 ## Getting Started
 
-To deploy the infrastructure for the secure Azure AI Studio, you need to:
+To set up the infrastructure for the secure Azure AI Studio, you will need to install the necessary prerequisites and follow these steps.
 
 ### Prerequisites
 
