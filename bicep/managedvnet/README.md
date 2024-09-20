@@ -114,7 +114,7 @@ According to the [documentation](https://learn.microsoft.com/en-us/azure/ai-stud
 - Azure Private Link - Private endpoints used to secure communications between the managed virtual network and Azure resources rely on Azure Private Link. For more information on pricing, see [Azure Private Link pricing](https://azure.microsoft.com/pricing/details/private-link/).
 - FQDN outbound rules - FQDN outbound rules are implemented using Azure Firewall. If you use outbound FQDN rules, charges for Azure Firewall are included in your billing. Azure Firewall SKU is standard. Azure Firewall is provisioned per hub.
 
-    > [!IMPORTANT]
+    > [!NOTE]
     > The firewall isn't created until you add an outbound FQDN rule. If you don't use FQDN rules, you will not be charged for Azure Firewall. For more information on pricing, see [Azure Firewall pricing](https://azure.microsoft.com/pricing/details/azure-firewall/).
 
 ## Secure Access to the Jumpbox Virtual Machine
