@@ -1,3 +1,32 @@
+---
+page_type: sample
+languages:
+- bash
+- bicep
+- python
+- json
+products:
+- azure
+- azure-openai
+- azure-machine-learning-studio
+- azure-resource-manager
+- azure-container-registry
+- azure-storage
+- azure-blob-storage
+- azure-storage-accounts
+- azure-bastion
+- azure-private-link
+- azure-virtual-network
+- azure-key-vault
+- azure-monitor
+- azure-log-analytics
+- azure-virtual-machines
+name:  Deploy Secure Azure AI Studio via Bicep
+description: This repository contains a collection of Bicep modules designed to deploy a secure Azure AI Studio environment with robust network and identity security restrictions.
+urlFragment: azure-ai-studio-secure-bicep
+azureDeploy: "https://raw.githubusercontent.com/Azure-Samples/azure-ai-studio-secure-bicep/main/bicep/managedvnet/azuredeploy.json"
+---
+
 # Deploy Secure Azure AI Studio with a managed virtual network
 
 This collection of [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/file) templates demonstrates how to set up an [Azure AI Studio](https://learn.microsoft.com/en-us/azure/ai-studio/what-is-ai-studio) environment with managed identity and Azure RBAC to connected [Azure AI Services](https://learn.microsoft.com/en-us/azure/ai-services/what-are-ai-services) and dependent resources and with the managed virtual network isolation mode set to [Allow Internet Outbound](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network). For more information, see [How to configure a managed network for Azure AI Studio hubs](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/configure-managed-network).
